@@ -144,20 +144,20 @@ func weekLesson2Bin(weekNums, lessonNums []int) uint32 {
 		if num > 19 {
 			logger.Error("weekNum不能超过19", num)
 		}
-		if res&(1<<31)>>(num-1) != 0 {
+		if res&((1<<31)>>(num-1)) != 0 {
 			logger.Error("weekNum重复覆盖！")
 		}
-		res = res | (1<<31)>>(num-1)
+		res = res | ((1 << 31) >> (num - 1))
 	}
 
 	for _, num := range lessonNums {
 		if num > 13 {
 			logger.Error("lessonNums不能超过13", num)
 		}
-		if res&1<<(num-1) != 0 {
+		if res&(1<<(num-1)) != 0 {
 			logger.Error("lessonNum重复覆盖！")
 		}
-		res = res | 1<<(num-1)
+		res = res | (1 << (num - 1))
 	}
 
 	return res
@@ -190,13 +190,12 @@ func GetCellTimeInfo(infoStr string, curWeekday int, courseInfoId uint32) dbmode
 	// 提取教室
 	room, _ := getRoom(newStr4)
 	fmt.Println(building, room)
-	var weekAndTime uint32 = 0
 
 	timeInfoIdCount++
 	return dbmodels.TimeInfo{
 		ID:           uint32(timeInfoIdCount),
 		CourseInfoId: courseInfoId,
-		WeekAndTime:  weekAndTime,
+		WeekAndTime:  weekLesson2Bin(weekNums, lessonNums),
 		DayOfWeek:    uint8(curWeekday),
 		Area:         uint8(areaNum),
 		Building:     building,
@@ -204,7 +203,8 @@ func GetCellTimeInfo(infoStr string, curWeekday int, courseInfoId uint32) dbmode
 	}
 
 }
-func GetAddrTimeInfo(timeAndAddr string, curWeekday int, courseInfoId uint32) {
+func GetAddrTimeInfo(timeInfos *[]dbmodels.TimeInfo,
+	timeAndAddr string, curWeekday int, courseInfoId uint32) {
 	if timeAndAddr == "" {
 		return
 	}
@@ -234,13 +234,17 @@ func GetAddrTimeInfo(timeAndAddr string, curWeekday int, courseInfoId uint32) {
 	}
 
 	for _, match := range matches {
-		GetCellTimeInfo(match[0], curWeekday, courseInfoId)
+		count3++
+		*timeInfos = append(*timeInfos,
+			GetCellTimeInfo(match[0], curWeekday, courseInfoId))
 	}
 
 	//println(timeAndAddr)
 }
 
 func main() {
+
+	//return
 	info, err := generator.ReadTeachInfo()
 	if err != nil {
 		logger.Error(err)
@@ -248,7 +252,7 @@ func main() {
 	}
 
 	resCourse := make([]dbmodels.CourseInfo, 0)
-	//resTime := make([]dbmodels.TimeInfo, 0)
+	resTime := make([]dbmodels.TimeInfo, 0)
 
 	//count := 0
 	for i, teachInfo := range info {
@@ -269,13 +273,13 @@ func main() {
 			TeacherTitle:     teachInfo.TeacherTitle,
 		})
 
-		GetAddrTimeInfo(teachInfo.AddrSunday, 0, uint32(i+1))
-		GetAddrTimeInfo(teachInfo.AddrMonday, 1, uint32(i+1))
-		GetAddrTimeInfo(teachInfo.AddrTuesday, 2, uint32(i+1))
-		GetAddrTimeInfo(teachInfo.AddrWednesday, 3, uint32(i+1))
-		GetAddrTimeInfo(teachInfo.AddrThursday, 4, uint32(i+1))
-		GetAddrTimeInfo(teachInfo.AddrFriday, 5, uint32(i+1))
-		GetAddrTimeInfo(teachInfo.AddrSaturday, 6, uint32(i+1))
+		GetAddrTimeInfo(&resTime, teachInfo.AddrSunday, 0, uint32(i+1))
+		GetAddrTimeInfo(&resTime, teachInfo.AddrMonday, 1, uint32(i+1))
+		GetAddrTimeInfo(&resTime, teachInfo.AddrTuesday, 2, uint32(i+1))
+		GetAddrTimeInfo(&resTime, teachInfo.AddrWednesday, 3, uint32(i+1))
+		GetAddrTimeInfo(&resTime, teachInfo.AddrThursday, 4, uint32(i+1))
+		GetAddrTimeInfo(&resTime, teachInfo.AddrFriday, 5, uint32(i+1))
+		GetAddrTimeInfo(&resTime, teachInfo.AddrSaturday, 6, uint32(i+1))
 
 	}
 	//logger.Info("start")
@@ -285,5 +289,6 @@ func main() {
 	//	return
 	//}
 
-	println(count1, count2, count3)
+	println(count1, count2, count3, count4)
+	println(len(resCourse), len(resTime))
 }
