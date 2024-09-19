@@ -106,7 +106,7 @@ func Warning(v ...any) {
 
 func Error(v ...any) {
 	myLogger.Error(v...)
-	//os.Exit(1)
+	os.Exit(1)
 }
 
 func Trace(v ...any) {

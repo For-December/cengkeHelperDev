@@ -11,7 +11,7 @@ import (
 var EnvCfg = struct {
 	ServerPort  string `env:"SERVER_PORT" envDefault:"8080"`
 	LogLevel    string `env:"LOG_LEVEL" envDefault:"debug"`
-	AutoMigrate bool   `env:"AUTO_MIGRATE"`
+	AutoMigrate bool   `env:"AUTO_MIGRATE" envDefault:"true"`
 }{}
 
 func init() {

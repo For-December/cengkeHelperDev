@@ -2,6 +2,7 @@ package database
 
 import (
 	"cengkeHelperDev/src/constant/config"
+	"cengkeHelperDev/src/dbmodels"
 	"cengkeHelperDev/src/utils/logger"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -34,7 +35,7 @@ func TableAutoMigrate() {
 		logger.Info("未启用迁移数据库")
 		return
 	}
-	if err := Client.AutoMigrate(&dbmodels.User{}); err != nil {
+	if err := Client.AutoMigrate(&dbmodels.TimeInfo{}, &dbmodels.CourseInfo{}); err != nil {
 		panic(err)
 		return
 	}

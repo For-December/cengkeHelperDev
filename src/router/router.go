@@ -8,7 +8,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-
 	"strings"
 	"time"
 )
@@ -18,10 +17,6 @@ var app *gin.Engine
 func Routers() *gin.Engine {
 
 	app.GET("/login", func(c *gin.Context) {
-
-		req := dbmodels.User{}
-		c.BindJSON(&req)
-		logger.Info(req)
 
 	})
 
