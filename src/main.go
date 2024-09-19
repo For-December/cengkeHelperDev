@@ -10,7 +10,7 @@ import (
 func main() {
 	//UpdateDB()
 	service.GetTeachInfos()
-	return
+	//return
 	logger.Info("start")
 
 	if err := router.Routers().Run(":" + config.EnvCfg.ServerPort); err != nil {

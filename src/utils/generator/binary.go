@@ -12,6 +12,10 @@ func NearestToDisplay(lessonNum int, binNum uint32) string {
 	begin := lessonNum
 	end := lessonNum
 	for (1<<(begin-1))&binNum != 0 {
+		if begin <= 1 {
+			begin = 0
+			break
+		}
 		begin--
 	}
 

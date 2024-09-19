@@ -1,6 +1,7 @@
 package router
 
 import (
+	"cengkeHelperDev/service"
 	"cengkeHelperDev/src/utils/calc"
 	"cengkeHelperDev/src/utils/logger"
 	"github.com/gin-contrib/cors"
@@ -27,12 +28,22 @@ func Routers() *gin.Engine {
 			logger.WarningF("请求的主机不合法: %v, refer为: %v", c.Request.Host, c.Request.Referer())
 			c.JSON(400, "bad request")
 		} else {
+			c.JSON(200, service.RespTeachInfos)
 			//logger.Warning(GetTeachInfos(true))
 			//c.JSON(200, GetTeachInfos(true))
 		}
 
 	})
+	app.GET("/cur-time", func(c *gin.Context) {
 
+		c.JSON(200, gin.H{
+			"isAdjust":  false,
+			"weekNum":   2,
+			"weekday":   4,
+			"lessonNum": 2,
+			"valid":     true,
+		})
+	})
 	app.POST("/register", func(c *gin.Context) {
 
 	})

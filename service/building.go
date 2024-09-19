@@ -23,6 +23,7 @@ type MapTeachInfo struct {
 	Teacher      string
 	TeacherTitle string
 	WeekAndTime  uint32
+	Building     string
 
 	CourseType string
 }
@@ -33,7 +34,7 @@ type BuildingTeachInfos struct {
 	Infos    []RespTeachInfo `json:"infos"`
 }
 
-var respTeachInfos = make([][]BuildingTeachInfos, 5)
+var RespTeachInfos = make([][]BuildingTeachInfos, 5)
 
 func searchByArea(areaNum int) []MapTeachInfo {
 	tempInfo := make([]MapTeachInfo, 0)
@@ -52,22 +53,35 @@ SELECT * FROM time_infos ti
 func GetTeachInfos() [][]BuildingTeachInfos {
 	//tempCourse := make([]dbmodels.CourseInfo, 0)
 
-	for _, info := range searchByArea(1) {
-		if !generator.IsWeekLessonMatch(2, 2, info.WeekAndTime) {
-			continue
+	for i := 1; i <= 4; i++ {
+		buildingMap := make(map[string][]RespTeachInfo)
+		for _, info := range searchByArea(i) {
+			if !generator.IsWeekLessonMatch(2, 2, info.WeekAndTime) {
+				continue
+			}
+
+			res := RespTeachInfo{
+				Room:         info.Classroom,
+				Faculty:      info.Faculty,
+				CourseName:   info.CourseName,
+				TeacherName:  info.Teacher,
+				TeacherTitle: info.TeacherTitle,
+				CourseTime:   generator.NearestToDisplay(2, info.WeekAndTime),
+				CourseType:   info.CourseType,
+			}
+			//_, lesson := generator.Bin2WeekLesson(info.WeekAndTime)
+			//logger.Info(res, lesson)
+			buildingMap[info.Building] = append(buildingMap[info.Building], res)
 		}
-		res := RespTeachInfo{
-			Room:         info.Classroom,
-			Faculty:      info.Faculty,
-			CourseName:   info.CourseName,
-			TeacherName:  info.Teacher,
-			TeacherTitle: info.TeacherTitle,
-			CourseTime:   "",
-			CourseType:   info.CourseType,
+		for key, infos := range buildingMap {
+			RespTeachInfos[i-1] = append(RespTeachInfos[i-1], BuildingTeachInfos{
+				Building: key,
+				Infos:    infos,
+			})
 		}
-		logger.Info(res)
 
 	}
+	RespTeachInfos[4] = make([]BuildingTeachInfos, 0)
 	//for _, info := range searchByArea(1) {
 	//	if !generator.IsWeekLessonMatch(2, 2, info.WeekAndTime) {
 	//		continue
@@ -78,5 +92,5 @@ func GetTeachInfos() [][]BuildingTeachInfos {
 	//}
 	//logger.Warning(tempCourse)
 
-	return respTeachInfos
+	return RespTeachInfos
 }
