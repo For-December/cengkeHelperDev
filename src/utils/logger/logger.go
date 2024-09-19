@@ -8,13 +8,20 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type MyWriter struct {
 }
 
 func writeToFile(b []byte) {
-	file, err := os.OpenFile("logs/text.log", os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModeDir|os.ModePerm)
+	// fileLogger 的单独配置
+	now := time.Now()
+	//now.Format("2006-01-02")
+	logDate := fmt.Sprintf("logs/%v_gin.log",
+		now.Format("2006-01-02"))
+
+	file, err := os.OpenFile(logDate, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModeDir|os.ModePerm)
 	if err != nil {
 		fmt.Println("writeToFileErr: ", err)
 		return
