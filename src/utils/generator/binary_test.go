@@ -5,17 +5,43 @@ import (
 	"testing"
 )
 
-func TestAdd(t *testing.T) {
+var weekNums = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 19, 18, 17}
+var lessonNums = []int{3, 7, 2, 4, 13, 11, 12}
+
+func TestHaveClass(t *testing.T) {
+	binNum := WeekLesson2Bin(weekNums, lessonNums)
+
+	for _, num := range weekNums {
+		if !IsWeekLessonMatch(num, -1, binNum) {
+			t.Error("error")
+		}
+	}
+
+	for _, num := range lessonNums {
+		IsWeekLessonMatch(-1, num, binNum)
+		if !IsWeekLessonMatch(-1, num, binNum) {
+			t.Error("error")
+		}
+	}
+
+	for _, num := range weekNums {
+		for _, num2 := range lessonNums {
+			if !IsWeekLessonMatch(num, num2, binNum) {
+				t.Error("error")
+			}
+		}
+	}
+}
+
+func TestBase(t *testing.T) {
 	fmt.Println(
 		Bin2WeekLesson(
-			WeekLesson2Bin([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 19, 18, 17},
-				[]int{3, 7, 2, 4, 13, 11, 12}),
+			WeekLesson2Bin(weekNums, lessonNums),
 		),
 	)
 
 	result1, result2 := Bin2WeekLesson(
-		WeekLesson2Bin([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 19, 18, 17},
-			[]int{3, 7, 2, 4, 13, 11, 12}),
+		WeekLesson2Bin(weekNums, lessonNums),
 	)
 
 	if len(result1) != 12 || len(result2) != 7 {

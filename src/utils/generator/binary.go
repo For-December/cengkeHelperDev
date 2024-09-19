@@ -2,6 +2,28 @@ package generator
 
 import "cengkeHelperDev/src/utils/logger"
 
+// IsWeekLessonMatch 判断周次和节次是否在所给的二进制数中
+func IsWeekLessonMatch(weekNum, lessonNum int, binNum uint32) bool {
+	if weekNum == -1 && lessonNum == -1 {
+		return true
+	}
+	if weekNum == -1 {
+		if (1<<(lessonNum-1))&binNum != 0 {
+			return true
+		}
+		return false
+	}
+	if lessonNum == -1 {
+		if (1<<(32-weekNum))&binNum != 0 {
+			return true
+		}
+		return false
+	}
+	if (1<<(32-weekNum))&binNum != 0 && (1<<(lessonNum-1))&binNum != 0 {
+		return true
+	}
+	return false
+}
 func Bin2WeekLesson(binNum uint32) ([]int, []int) {
 	weekNums := make([]int, 0)
 	lessonNums := make([]int, 0)
