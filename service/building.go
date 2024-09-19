@@ -50,13 +50,16 @@ SELECT * FROM time_infos ti
 
 	return tempInfo
 }
-func GetTeachInfos() [][]BuildingTeachInfos {
+func getInfos() [][]BuildingTeachInfos {
 	//tempCourse := make([]dbmodels.CourseInfo, 0)
-
+	for i := 0; i < 5; i++ {
+		RespTeachInfos[i] = make([]BuildingTeachInfos, 0)
+	}
 	for i := 1; i <= 4; i++ {
 		buildingMap := make(map[string][]RespTeachInfo)
 		for _, info := range searchByArea(i) {
-			if !generator.IsWeekLessonMatch(2, 2, info.WeekAndTime) {
+			weekNum, _, lessonNum := CurCourseTime()
+			if !generator.IsWeekLessonMatch(weekNum, lessonNum, info.WeekAndTime) {
 				continue
 			}
 
@@ -66,7 +69,7 @@ func GetTeachInfos() [][]BuildingTeachInfos {
 				CourseName:   info.CourseName,
 				TeacherName:  info.Teacher,
 				TeacherTitle: info.TeacherTitle,
-				CourseTime:   generator.NearestToDisplay(2, info.WeekAndTime),
+				CourseTime:   generator.NearestToDisplay(lessonNum, info.WeekAndTime),
 				CourseType:   info.CourseType,
 			}
 			//_, lesson := generator.Bin2WeekLesson(info.WeekAndTime)
@@ -81,7 +84,6 @@ func GetTeachInfos() [][]BuildingTeachInfos {
 		}
 
 	}
-	RespTeachInfos[4] = make([]BuildingTeachInfos, 0)
 	//for _, info := range searchByArea(1) {
 	//	if !generator.IsWeekLessonMatch(2, 2, info.WeekAndTime) {
 	//		continue

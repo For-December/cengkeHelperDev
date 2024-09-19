@@ -28,20 +28,29 @@ func Routers() *gin.Engine {
 			logger.WarningF("请求的主机不合法: %v, refer为: %v", c.Request.Host, c.Request.Referer())
 			c.JSON(400, "bad request")
 		} else {
-			c.JSON(200, service.RespTeachInfos)
+			c.JSON(200, service.GetTeachInfos(true))
 			//logger.Warning(GetTeachInfos(true))
 			//c.JSON(200, GetTeachInfos(true))
 		}
 
 	})
 	app.GET("/cur-time", func(c *gin.Context) {
+		weekNum, weekday, lessonNum := service.CurCourseTime()
+
+		valid := true
+		if !service.ValidCache() {
+			logger.Warning("缓存失效")
+			service.GetTeachInfos(false)
+			service.FreshCacheFlag()
+			valid = false
+		}
 
 		c.JSON(200, gin.H{
 			"isAdjust":  false,
-			"weekNum":   2,
-			"weekday":   4,
-			"lessonNum": 2,
-			"valid":     true,
+			"weekNum":   weekNum,
+			"weekday":   weekday,
+			"lessonNum": lessonNum,
+			"valid":     valid,
 		})
 	})
 	app.POST("/register", func(c *gin.Context) {

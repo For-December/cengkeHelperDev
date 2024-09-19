@@ -9,7 +9,7 @@ import (
 
 func main() {
 	//UpdateDB()
-	service.GetTeachInfos()
+	service.GetTeachInfos(false)
 	//return
 	logger.Info("start")
 

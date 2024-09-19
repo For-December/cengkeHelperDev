@@ -31,9 +31,14 @@ func NearestToDisplay(lessonNum int, binNum uint32) string {
 
 // IsWeekLessonMatch 判断周次和节次是否在所给的二进制数中
 func IsWeekLessonMatch(weekNum, lessonNum int, binNum uint32) bool {
+	if lessonNum < -1 {
+		return false
+	}
+
 	if weekNum == -1 && lessonNum == -1 {
 		return true
 	}
+
 	if weekNum == -1 {
 		if (1<<(lessonNum-1))&binNum != 0 {
 			return true
