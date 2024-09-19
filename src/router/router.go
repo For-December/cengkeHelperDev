@@ -3,6 +3,7 @@ package router
 import (
 	"cengkeHelperDev/service"
 	"cengkeHelperDev/src/utils/calc"
+	"cengkeHelperDev/src/utils/location"
 	"cengkeHelperDev/src/utils/logger"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/static"
@@ -35,6 +36,9 @@ func Routers() *gin.Engine {
 
 	})
 	app.GET("/cur-time", func(c *gin.Context) {
+		logger.InfoF("ip => %v 「%v」 ==> website", c.ClientIP(),
+			location.IpToLocation(c.ClientIP()))
+
 		weekNum, weekday, lessonNum := service.CurCourseTime()
 
 		valid := true
