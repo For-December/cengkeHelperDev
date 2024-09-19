@@ -245,15 +245,24 @@ func UpdateDB() {
 	println(count1, count2, count3, count4)
 	println(len(resCourse), len(resTime))
 
-	if err := database.Client.Save(&resCourse).Error; err != nil {
-		logger.Error(err)
-		return
-	}
-	if err := database.Client.Save(&resTime).Error; err != nil {
-		logger.Error(err)
-		return
-	}
+	batchInsert[dbmodels.CourseInfo](resCourse)
+	batchInsert[dbmodels.TimeInfo](resTime)
 
 	logger.Info("更新数据完毕")
 
+}
+
+func batchInsert[T dbmodels.CourseInfo | dbmodels.TimeInfo](data []T) {
+	batchSize := 500
+	for i := 0; i < len(data); i += batchSize {
+		end := i + batchSize
+		if end > len(data) {
+			end = len(data)
+		}
+
+		if err := database.Client.Save(data[i:end]).Error; err != nil {
+			logger.Error(err)
+			return
+		}
+	}
 }
