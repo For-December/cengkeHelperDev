@@ -40,7 +40,8 @@ func getBuilding(str string) (string, string) {
 		curBuilding += "-教学楼"
 		return curBuilding, string([]rune(str)[1:])
 	}
-	return str, str
+
+	return strings.Split(str, "(")[0], str
 
 }
 

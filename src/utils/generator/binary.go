@@ -1,6 +1,29 @@
 package generator
 
-import "cengkeHelperDev/src/utils/logger"
+import (
+	"cengkeHelperDev/src/utils/logger"
+	"fmt"
+)
+
+func NearestToDisplay(lessonNum int, binNum uint32) string {
+	if lessonNum == -1 {
+		return "全天"
+	}
+	begin := lessonNum
+	end := lessonNum
+	for (1<<(begin-1))&binNum != 0 {
+		begin--
+	}
+
+	for (1<<(end-1))&binNum != 0 {
+		end++
+	}
+	if end > 14 {
+		end = 14
+	}
+
+	return fmt.Sprintf("第 %d-%d 节", begin+1, end-1)
+}
 
 // IsWeekLessonMatch 判断周次和节次是否在所给的二进制数中
 func IsWeekLessonMatch(weekNum, lessonNum int, binNum uint32) bool {

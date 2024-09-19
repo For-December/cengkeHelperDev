@@ -8,6 +8,12 @@ import (
 var weekNums = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 19, 18, 17}
 var lessonNums = []int{3, 7, 2, 4, 13, 11, 12}
 
+func TestNearestToDisplay(t *testing.T) {
+	//fmt.Println(NearestToDisplay(3, WeekLesson2Bin(weekNums, lessonNums)))
+	//fmt.Println(NearestToDisplay(7, WeekLesson2Bin(weekNums, lessonNums)))
+	fmt.Println(NearestToDisplay(11, WeekLesson2Bin(weekNums, lessonNums)))
+	fmt.Println(NearestToDisplay(13, WeekLesson2Bin(weekNums, lessonNums)))
+}
 func TestHaveClass(t *testing.T) {
 	binNum := WeekLesson2Bin(weekNums, lessonNums)
 

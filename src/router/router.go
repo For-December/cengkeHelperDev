@@ -1,6 +1,8 @@
 package router
 
 import (
+	"cengkeHelperDev/src/utils/calc"
+	"cengkeHelperDev/src/utils/logger"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
@@ -13,10 +15,21 @@ import (
 )
 
 var app *gin.Engine
+var validHosts = []string{
+	"localhost", "cengkehelper.top", "huster.pages.dev", "ursb.top", "蹭课小助手.top",
+}
 
 func Routers() *gin.Engine {
 
-	app.GET("/login", func(c *gin.Context) {
+	app.POST("/teach-infos", func(c *gin.Context) {
+
+		if !calc.IsTargetInArray(c.Request.Host, validHosts) {
+			logger.WarningF("请求的主机不合法: %v, refer为: %v", c.Request.Host, c.Request.Referer())
+			c.JSON(400, "bad request")
+		} else {
+			//logger.Warning(GetTeachInfos(true))
+			//c.JSON(200, GetTeachInfos(true))
+		}
 
 	})
 
@@ -54,7 +67,7 @@ func init() {
 		accept := c.Request.Header.Get("Accept")
 		flag := strings.Contains(accept, "text/html")
 		if flag {
-			content, err := os.ReadFile("dist/index.html")
+			content, err := os.ReadFile("dist1/index.html")
 			if (err) != nil {
 				c.Writer.WriteHeader(404)
 				_, err := c.Writer.WriteString("Not Found")

@@ -9,7 +9,7 @@ import (
 //var EnvCfg envConfig
 
 var EnvCfg = struct {
-	ServerPort  string `env:"SERVER_PORT" envDefault:"8080"`
+	ServerPort  string `env:"SERVER_PORT" envDefault:"80"`
 	LogLevel    string `env:"LOG_LEVEL" envDefault:"debug"`
 	AutoMigrate bool   `env:"AUTO_MIGRATE" envDefault:"true"`
 }{}
