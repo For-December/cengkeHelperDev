@@ -23,7 +23,7 @@ func writeToFile(b []byte) {
 
 	file, err := os.OpenFile(logDate, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModeDir|os.ModePerm)
 	if err != nil {
-		fmt.Println("writeToFileErr: ", err)
+		fmt.Println("open file error: ", err)
 		return
 	}
 	_, err = file.Write(b)
