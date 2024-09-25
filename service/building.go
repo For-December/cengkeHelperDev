@@ -42,7 +42,7 @@ func searchByArea(areaNum int) []MapTeachInfo {
 		Raw(`
 SELECT * FROM time_infos ti 
          JOIN course_infos ci on ci.id = ti.course_info_id
-         WHERE ti.day_of_week = ? AND ti.area = ?`,
+         WHERE ti.day_of_week = ? AND ti.area = ? GROUP BY course_info_id`,
 			time.Now().Weekday(), areaNum).
 		Find(&tempInfo).Error; err != nil {
 		logger.Error(err)
