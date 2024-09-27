@@ -1,10 +1,8 @@
 package router
 
 import (
-	"cengkeHelperDev/src/service"
-	"cengkeHelperDev/src/utils/calc"
-	"cengkeHelperDev/src/utils/location"
-	"cengkeHelperDev/src/utils/logger"
+	"cengkeHelperDev/src/controller/course_helper"
+	"cengkeHelperDev/src/controller/tree_hole"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
@@ -17,51 +15,18 @@ import (
 )
 
 var app *gin.Engine
-var validHosts = []string{
-	"localhost", "cengkehelper.top", "huster.pages.dev", "ursb.top", "蹭课小助手.top",
-}
 
 func Routers() *gin.Engine {
 
-	app.POST("/teach-infos", func(c *gin.Context) {
+	app.POST("/teach-infos", course_helper.TeachInfoHandler)
+	app.GET("/cur-time", course_helper.CurTimeHandler)
 
-		if !calc.IsTargetInArray(c.Request.Host, validHosts) {
-			logger.WarningF("请求的主机不合法: %v, refer为: %v", c.Request.Host, c.Request.Referer())
-			c.JSON(400, "bad request")
-		} else {
-			c.JSON(200, service.GetTeachInfos(true))
-			//logger.Warning(GetTeachInfos(true))
-			//c.JSON(200, GetTeachInfos(true))
-		}
-
-	})
-	app.GET("/cur-time", func(c *gin.Context) {
-		logger.InfoF("ip => %v 「%v」 ==> website", c.ClientIP(),
-			location.IpToLocation(c.ClientIP()))
-
-		weekNum, weekday, lessonNum := service.CurCourseTime()
-
-		valid := true
-		if !service.ValidCache() {
-			logger.Warning("缓存失效")
-			service.GetTeachInfos(false)
-			service.FreshCacheFlag()
-			valid = false
-		}
-
-		c.JSON(200, gin.H{
-			"isAdjust":  false,
-			"weekNum":   weekNum,
-			"weekday":   weekday,
-			"lessonNum": lessonNum,
-			"valid":     valid,
-		})
-	})
-	app.POST("/register", func(c *gin.Context) {
-
-	})
+	// 树洞api v1
+	v1 := app.Group("/api/v1")
+	{
+		v1.GET("posts", tree_hole.PostsGetAllHandler)
+	}
 	return app
-
 }
 
 func init() {
