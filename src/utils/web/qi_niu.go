@@ -20,7 +20,7 @@ func UploadToQiNiu(reader io.Reader) (string, error) {
 
 	mac := credentials.NewCredentials(accessKey, secretKey)
 
-	key := fmt.Sprintf("img_%d.png", time.Now().Unix())
+	key := fmt.Sprintf("img_%d", time.Now().Unix())
 
 	uploadManager := uploader.NewUploadManager(&uploader.UploadManagerOptions{
 		Options: http_client.Options{

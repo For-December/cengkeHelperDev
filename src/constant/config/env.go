@@ -21,7 +21,7 @@ var EnvCfg = struct {
 }{}
 
 func init() {
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		log.Fatal("Can not read env from file system, please check the right this program owned.")
 	}
 

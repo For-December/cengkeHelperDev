@@ -25,6 +25,7 @@ func Routers() *gin.Engine {
 	v1 := app.Group("/api/v1")
 	{
 		v1.GET("posts", tree_hole.PostsGetAllHandler)
+		v1.POST("posts", tree_hole.PostsCreateOneHandler)
 	}
 	return app
 }
