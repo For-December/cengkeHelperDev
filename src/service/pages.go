@@ -5,7 +5,29 @@ import (
 	"cengkeHelperDev/src/models"
 	"cengkeHelperDev/src/storage/database"
 	"cengkeHelperDev/src/utils/logger"
+	"github.com/gin-gonic/gin"
+	"strconv"
 )
+
+func ParsePageParams(c *gin.Context) (int, int, string) {
+	page := 1
+	pageSize := 10
+	searchValue := ""
+	if value, exists := c.GetQuery("page"); exists {
+		page, _ = strconv.Atoi(value)
+	}
+
+	if value, exists := c.GetQuery("pageSize"); exists {
+		pageSize, _ = strconv.Atoi(value)
+
+	}
+
+	if value, exists := c.GetQuery("searchValue"); exists {
+		searchValue = value
+	}
+
+	return page, pageSize, searchValue
+}
 
 // GetWrapperWithPage 分页查询封装
 // M: Model type

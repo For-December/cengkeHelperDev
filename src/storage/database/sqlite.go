@@ -35,7 +35,9 @@ func TableAutoMigrate() {
 		logger.Info("未启用迁移数据库")
 		return
 	}
-	if err := Client.AutoMigrate(&dbmodels.TimeInfo{}, &dbmodels.CourseInfo{}); err != nil {
+	if err := Client.AutoMigrate(&dbmodels.TimeInfo{}, &dbmodels.CourseInfo{},
+		&dbmodels.PostRecord{},
+	); err != nil {
 		panic(err)
 		return
 	}

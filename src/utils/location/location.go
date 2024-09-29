@@ -34,7 +34,7 @@ func IpToLocation(ip string) string {
 
 	// 计算签名
 	str := fmt.Sprintf("/ws/location/v1/ip?ip=%v&key=%v%v",
-		ip, config.EnvCfg.LocationKey, config.EnvCfg.SecretKey)
+		ip, config.EnvCfg.LocationKey, config.EnvCfg.LocationSecret)
 	hash := md5.Sum([]byte(str))
 	md5Str := hex.EncodeToString(hash[:])
 

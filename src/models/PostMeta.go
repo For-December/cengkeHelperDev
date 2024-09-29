@@ -2,7 +2,7 @@ package models
 
 import (
 	"cengkeHelperDev/src/utils/logger"
-	"github.com/bytedance/sonic"
+	"encoding/json"
 )
 
 type PostMeta struct {
@@ -36,11 +36,11 @@ func (receiver *PostMetaBuilder) BuildImage(image string) *PostMetaBuilder {
 }
 
 func (receiver *PostMetaBuilder) BuildJson() string {
-	marshalString, err := sonic.MarshalString(receiver.PostMetas)
+	marshal, err := json.Marshal(receiver.PostMetas)
 	if err != nil {
 		logger.Warning(receiver.PostMetas)
 		logger.Warning(err)
 		return "[]"
 	}
-	return marshalString
+	return string(marshal)
 }

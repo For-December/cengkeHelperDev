@@ -3,28 +3,16 @@ package tree_hole
 import (
 	"cengkeHelperDev/src/dbmodels"
 	"cengkeHelperDev/src/models"
+	"cengkeHelperDev/src/service"
 	"cengkeHelperDev/src/utils/logger"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 )
 
 func PostsGetAllHandler(c *gin.Context) {
-	page := 1
-	pageSize := 10
-	searchValue := ""
-	if value, exists := c.GetQuery("page"); exists {
-		page, _ = strconv.Atoi(value)
-	}
 
-	if value, exists := c.GetQuery("pageSize"); exists {
-		pageSize, _ = strconv.Atoi(value)
-
-	}
-
-	if value, exists := c.GetQuery("searchValue"); exists {
-		searchValue = value
-	}
+	page, pageSize, searchValue := service.ParsePageParams(c)
+	logger.Info(page, pageSize, searchValue)
 
 	//res := service.GetPostsWithPage(page, pageSize,
 	//	"title LIKE ?",
@@ -35,7 +23,6 @@ func PostsGetAllHandler(c *gin.Context) {
 	//		models.NewBadResp("分页失败，请联系开发者"))
 	//	return
 	//}
-	logger.Info(page, pageSize, searchValue)
 
 	c.JSON(http.StatusOK, models.RespData{
 		Code: 200,
@@ -63,5 +50,26 @@ func PostsGetAllHandler(c *gin.Context) {
 			Total: 1,
 		},
 		Msg: "success",
+	})
+}
+
+func PostsCreateOneHandler(c *gin.Context) {
+	var post dbmodels.PostRecord
+	if err := c.ShouldBindJSON(&post); err != nil {
+		logger.Warning(err)
+		c.JSON(http.StatusBadRequest, models.NewBadResp("参数错误！"))
+		return
+	}
+
+	if err := service.CreatePost(&post); err != nil {
+		logger.Error(err)
+		c.JSON(http.StatusBadRequest, models.NewBadResp("发帖失败！"))
+		return
+	}
+
+	c.JSON(http.StatusOK, models.RespData{
+		Code: 200,
+		Data: post,
+		Msg:  "success",
 	})
 }
