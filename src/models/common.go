@@ -17,7 +17,7 @@ func NewBadResp(msg string) RespData {
 }
 
 type DividePageWrapper[
-	T dbmodels.PostRecord] struct {
+	T dbmodels.PostRecord | dbmodels.CommentRecord] struct {
 	Page     int `json:"page"`
 	PageSize int `json:"pageSize"`
 	List     []T `json:"list"`

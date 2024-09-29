@@ -36,7 +36,7 @@ func TableAutoMigrate() {
 		return
 	}
 	if err := Client.AutoMigrate(&dbmodels.TimeInfo{}, &dbmodels.CourseInfo{},
-		&dbmodels.PostRecord{},
+		&dbmodels.PostRecord{}, &dbmodels.CommentRecord{},
 	); err != nil {
 		panic(err)
 		return

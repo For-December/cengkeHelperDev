@@ -4,7 +4,7 @@ import "time"
 
 type PostRecord struct {
 	BaseModel
-	AuthorID        uint32    `gorm:"not null" json:"authorId"`
+	AuthorId        uint32    `gorm:"not null" json:"authorId"`
 	AuthorName      string    `gorm:"not null;type:varchar(255)" json:"authorName"`
 	CommentCount    uint32    `gorm:"not null" json:"commentCount"`
 	UpvoteCount     uint32    `gorm:"not null" json:"upvoteCount"`

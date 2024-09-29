@@ -34,8 +34,8 @@ func ParsePageParams(c *gin.Context) (int, int, string) {
 // R: Result type
 // 降序排序
 func GetWrapperWithPage[
-	M dbmodels.PostRecord,
-	R dbmodels.PostRecord](
+	M dbmodels.PostRecord | dbmodels.CommentRecord,
+	R dbmodels.PostRecord | dbmodels.CommentRecord](
 	page int, pageSize int,
 	orderRule string,
 	conditions ...interface{}) *models.DividePageWrapper[R] {

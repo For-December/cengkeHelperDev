@@ -26,7 +26,7 @@ func PostsGetAllHandler(c *gin.Context) {
 	}
 	res.List = append(res.List, dbmodels.PostRecord{
 		BaseModel:    dbmodels.BaseModel{},
-		AuthorID:     1,
+		AuthorId:     1,
 		AuthorName:   "jack",
 		CommentCount: 1,
 		UpvoteCount:  2,
@@ -67,6 +67,51 @@ func PostsCreateOneHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, models.RespData{
 		Code: 200,
 		Data: nil,
+		Msg:  "success",
+	})
+}
+
+func PostsGetOneHandler(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.NewBadResp("参数错误！"))
+		return
+	}
+
+	post := service.GetPostById(uint32(id))
+	if post == nil {
+		c.JSON(http.StatusBadRequest, models.NewBadResp("帖子不存在！"))
+		return
+	}
+
+	c.JSON(http.StatusOK, models.RespData{
+		Code: 200,
+		Data: post,
+		Msg:  "success",
+	})
+
+}
+
+func PostsGetCommentsHandler(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.NewBadResp("参数错误！"))
+		return
+	}
+
+	page, pageSize, _ := service.ParsePageParams(c)
+
+	res := service.GetCommentsByPostIdWithPage(page, pageSize, uint32(id))
+	if res == nil {
+		c.JSON(http.StatusBadRequest, models.NewBadResp("分页失败，请联系开发者"))
+		return
+	}
+
+	c.JSON(http.StatusOK, models.RespData{
+		Code: 200,
+		Data: res,
 		Msg:  "success",
 	})
 }
