@@ -4,6 +4,7 @@ import (
 	"cengkeHelperDev/src/dbmodels"
 	"cengkeHelperDev/src/models"
 	"cengkeHelperDev/src/storage/database"
+	"errors"
 	"gorm.io/gorm"
 )
 
@@ -25,11 +26,16 @@ func GetCommentsByPostIdWithPage(
 func SaveComment(authorId, postId uint32, authorName, content string) error {
 
 	if err := database.Client.Transaction(func(tx *gorm.DB) error {
-		// 获取当前帖子的评论数
-		var count int64
+		// 获取当前帖子的信息
+		post := dbmodels.PostRecord{}
 		if err := tx.Model(&dbmodels.PostRecord{}).
-			Where("id = ?", postId).Count(&count).Error; err != nil {
+			Where("id = ?", postId).
+			Find(&post).Error; err != nil {
 			return err
+		}
+
+		if post.ID == 0 {
+			return errors.New("帖子不存在！")
 		}
 
 		// 保存评论
@@ -38,7 +44,7 @@ func SaveComment(authorId, postId uint32, authorName, content string) error {
 			AuthorId:   authorId,
 			AuthorName: authorName,
 			Content:    content,
-			FloorNum:   uint32(count) + 1,
+			FloorNum:   uint32(post.CommentCount) + 1,
 		}
 
 		if err := tx.Save(comment).Error; err != nil {
@@ -48,7 +54,7 @@ func SaveComment(authorId, postId uint32, authorName, content string) error {
 		// 更新帖子的评论数
 		if err := tx.Model(&dbmodels.PostRecord{}).
 			Where("id = ?", postId).
-			Update("comment_count", count+1).Error; err != nil {
+			Update("comment_count", post.CommentCount+1).Error; err != nil {
 			return err
 		}
 

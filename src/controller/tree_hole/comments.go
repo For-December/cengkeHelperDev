@@ -21,7 +21,7 @@ func CommentsCreateOneHandler(c *gin.Context) {
 
 	// 从token中获取用户id和用户名
 	authorIdStr := "1"
-	authorName := "jack"
+	authorName := "芝士雪豹"
 	authorId, _ := strconv.Atoi(authorIdStr)
 
 	// 从请求中获取评论内容
