@@ -31,6 +31,7 @@ func Routers() *gin.Engine {
 		//v1.POST("posts/:id/upvote", tree_hole.PostsUpvoteHandler)
 
 		v1.GET("posts/:id/comments", tree_hole.PostsGetCommentsHandler)
+		v1.POST("posts/:id/comments", tree_hole.CommentsCreateOneHandler)
 	}
 	return app
 }
