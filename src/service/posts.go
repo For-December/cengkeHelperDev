@@ -34,29 +34,19 @@ func SavePost(post *dbmodels.PostRecord) error {
 	return database.Client.Model(&dbmodels.PostRecord{}).Save(post).Error
 }
 
-func CreatePost(authorId uint32,
-	authorName string, text string,
-	images []*multipart.FileHeader) error {
+func CreatePost(authorId uint32, authorName string, text string, images []*multipart.FileHeader) error {
+	// 使用上下文来控制操作的超时或取消
+	//ctx := context.Background()
 
 	postBuilder := models.PostMetaBuilder{}
 	postBuilder.BuildText(text)
-	// 上传图片
-	for _, image := range images {
-		file, err := image.Open()
-		if err != nil {
-			logger.Warning(err)
-			return err
-		}
 
-		imageStr, err := web.UploadToQiNiu(file)
-		if err != nil {
-			logger.Warning(err)
-			_ = file.Close()
-			return err
-		}
-		_ = file.Close()
-		postBuilder.BuildImage(imageStr)
+	resImageURLs, err := web.MultiUploadToQiNiu(images)
+	if err != nil {
+		logger.Warning(err)
+		return err
 	}
+	postBuilder.BuildImages(resImageURLs)
 
 	post := &dbmodels.PostRecord{
 		BaseModel:       dbmodels.BaseModel{},

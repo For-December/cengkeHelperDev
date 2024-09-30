@@ -2,6 +2,7 @@ package web
 
 import (
 	"cengkeHelperDev/src/utils/logger"
+	"mime/multipart"
 	"os"
 	"testing"
 )
@@ -19,4 +20,17 @@ func TestUploadToQiNiu(t *testing.T) {
 	}
 	logger.Info(niu)
 	return
+}
+
+func TestMultiUploadToQiNiu(t *testing.T) {
+
+	niu, err := MultiUploadToQiNiu(make([]*multipart.FileHeader, 3))
+	if err != nil {
+		logger.Error(err)
+		return
+	}
+	for _, s := range niu {
+		logger.Info(s)
+	}
+
 }

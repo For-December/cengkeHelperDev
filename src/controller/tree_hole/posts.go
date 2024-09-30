@@ -58,6 +58,11 @@ func PostsCreateOneHandler(c *gin.Context) {
 		return
 	}
 
+	if len(images) > 5 {
+		c.JSON(http.StatusBadRequest, models.NewBadResp("图片数量超过5张！"))
+		return
+	}
+
 	if err := service.CreatePost(uint32(authorId), authorName, text, images); err != nil {
 		logger.Error(err)
 		c.JSON(http.StatusBadRequest, models.NewBadResp("发帖失败！"))

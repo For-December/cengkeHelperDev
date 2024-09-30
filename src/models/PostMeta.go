@@ -35,6 +35,16 @@ func (receiver *PostMetaBuilder) BuildImage(image string) *PostMetaBuilder {
 	return receiver
 }
 
+func (receiver *PostMetaBuilder) BuildImages(images []string) *PostMetaBuilder {
+	for _, image := range images {
+		receiver.PostMetas = append(receiver.PostMetas, PostMeta{
+			Type: "image",
+			Url:  image,
+		})
+	}
+	return receiver
+}
+
 func (receiver *PostMetaBuilder) BuildJson() string {
 	marshal, err := json.Marshal(receiver.PostMetas)
 	if err != nil {
