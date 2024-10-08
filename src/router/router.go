@@ -32,6 +32,10 @@ func Routers() *gin.Engine {
 
 		v1.GET("posts/:id/comments", tree_hole.PostsGetCommentsHandler)
 		v1.POST("posts/:id/comments", tree_hole.CommentsCreateOneHandler)
+
+		// 为贴子点赞
+		v1.POST("posts/:id/stars", tree_hole.StarsCreateOneHandler)
+
 	}
 	return app
 }
