@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func StarsCreateOneHandler(c *gin.Context) {
+func StarsUpdateOneHandler(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -22,10 +22,22 @@ func StarsCreateOneHandler(c *gin.Context) {
 	userIdStr := "1"
 	userId, _ := strconv.Atoi(userIdStr)
 
-	// 保存点赞
-	if err := service.SaveStar(
+	// 从请求中获取点赞状态
+	type T struct {
+		IsStar bool `json:"isStar"`
+	}
+	req := T{}
+	if err := c.ShouldBind(&req); err != nil {
+		logger.Warning(err)
+		c.JSON(http.StatusBadRequest, models.NewBadResp("参数错误！"))
+		return
+	}
+
+	// 修改点赞状态
+	if err := service.UpdateStar(
 		uint32(userId),
 		uint32(id),
+		req.IsStar,
 	); err != nil {
 		logger.Warning(err)
 		c.JSON(http.StatusBadRequest, models.NewBadResp("点赞失败！"))

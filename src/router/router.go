@@ -34,8 +34,8 @@ func Routers() *gin.Engine {
 		v1.GET("posts/:id/comments", tree_hole.PostsGetCommentsHandler)
 		v1.POST("posts/:id/comments", tree_hole.CommentsCreateOneHandler)
 
-		// 为贴子点赞
-		v1.POST("posts/:id/stars", tree_hole.StarsCreateOneHandler)
+		// 修改某个贴子的点赞状态
+		v1.POST("posts/:id/stars", tree_hole.StarsUpdateOneHandler)
 
 		// 删除评论
 		v1.DELETE("comments/:id", tree_hole.CommentsDeleteOneHandler)

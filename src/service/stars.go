@@ -9,25 +9,41 @@ import (
 	"time"
 )
 
-func SaveStar(userId, postId uint32) error {
+func UpdateStar(userId, postId uint32, isStar bool) error {
 	if err := database.Client.Transaction(func(tx *gorm.DB) error {
+
 		// 贴子点赞数+1
+		sqlExpr := gorm.Expr("upvote_count + 1")
+
+		// 如果取消点赞，贴子点赞数-1
+		if !isStar {
+			sqlExpr = gorm.Expr("upvote_count - 1")
+		}
+
 		if rowsAffected := tx.Model(&dbmodels.PostRecord{}).
 			Where("id = ?", postId).
-			UpdateColumn("upvote_count", gorm.Expr("upvote_count + 1")).
+			UpdateColumn("upvote_count", sqlExpr).
 			RowsAffected; rowsAffected != 1 {
-			return errors.New("已点赞！")
+			return errors.New("贴子不存在！")
 		}
 
-		// 保存点赞信息
-		star := &dbmodels.StarRecord{
-			PostId:    postId,
-			UserId:    userId,
-			CreatedAt: time.Now(),
-		}
+		// 保存或删除点赞信息
+		if isStar {
+			star := &dbmodels.StarRecord{
+				PostId:    postId,
+				UserId:    userId,
+				CreatedAt: time.Now(),
+			}
 
-		if err := tx.Save(star).Error; err != nil {
-			return err
+			if err := tx.Save(star).Error; err != nil {
+				return err
+			}
+		} else {
+			if err := tx.Model(&dbmodels.StarRecord{}).
+				Where("post_id = ? AND user_id = ?", postId, userId).
+				Delete(nil).Error; err != nil {
+				return err
+			}
 		}
 
 		return nil
