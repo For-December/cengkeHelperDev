@@ -26,7 +26,7 @@ func PostsGetAllHandler(c *gin.Context) {
 	}
 	res.List = append(res.List, dbmodels.PostRecord{
 		BaseModel:    dbmodels.BaseModel{},
-		AuthorId:     1,
+		AuthorId:     0,
 		AuthorName:   "jack",
 		CommentCount: 1,
 		UpvoteCount:  2,
@@ -106,15 +106,19 @@ func PostsDeleteOneHandler(c *gin.Context) {
 		return
 	}
 
-	post := service.GetPostById(uint32(id))
-	if post == nil {
-		c.JSON(http.StatusBadRequest, models.NewBadResp("帖子不存在！"))
+	// 从token中获取用户id
+	authorIdStr := "1"
+	authorId, _ := strconv.Atoi(authorIdStr)
+
+	err = service.DeletePostById(uint32(authorId), uint32(id))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.NewBadResp(err.Error()))
 		return
 	}
 
 	c.JSON(http.StatusOK, models.RespData{
 		Code: 200,
-		Data: post,
+		Data: nil,
 		Msg:  "success",
 	})
 

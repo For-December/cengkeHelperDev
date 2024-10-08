@@ -27,6 +27,7 @@ func Routers() *gin.Engine {
 		v1.GET("posts", tree_hole.PostsGetAllHandler)
 		v1.POST("posts", tree_hole.PostsCreateOneHandler)
 		v1.GET("posts/:id", tree_hole.PostsGetOneHandler)
+		v1.DELETE("posts/:id", tree_hole.PostsDeleteOneHandler)
 
 		//v1.POST("posts/:id/upvote", tree_hole.PostsUpvoteHandler)
 

@@ -9,6 +9,7 @@ import (
 	"cengkeHelperDev/src/utils/web"
 	"encoding/json"
 	"errors"
+	"gorm.io/gorm"
 	"mime/multipart"
 	"strings"
 	"time"
@@ -35,7 +36,7 @@ func GetPostById(id uint32) *dbmodels.PostRecord {
 	return post
 }
 
-func DeletePostById(id uint32) error {
+func DeletePostById(userId, id uint32) error {
 	post := &dbmodels.PostRecord{}
 	if err := database.Client.First(post, id).Error; err != nil {
 		logger.Warning(err)
@@ -46,11 +47,29 @@ func DeletePostById(id uint32) error {
 		return errors.New("贴子不存在！")
 	}
 
-	// 先从数据库中删除贴子
-	if err := database.Client.Model(&dbmodels.PostRecord{}).
-		Where("id = ?", id).
-		Delete(nil).Error; err != nil {
-		logger.Warning(err)
+	if post.AuthorId != userId {
+
+		return errors.New("无删除权限！")
+	}
+
+	if err := database.Client.Transaction(func(tx *gorm.DB) error {
+		// 先从数据库中删除贴子
+		if err := tx.Model(&dbmodels.PostRecord{}).
+			Where("id = ?", id).
+			Delete(nil).Error; err != nil {
+			logger.Warning(err)
+			return err
+		}
+
+		// 同时删除关联的评论
+		if err := tx.Model(&dbmodels.CommentRecord{}).
+			Where("post_id = ?", id).
+			Delete(nil).Error; err != nil {
+			logger.Warning(err)
+			return err
+		}
+		return nil
+	}); err != nil {
 		return err
 	}
 
