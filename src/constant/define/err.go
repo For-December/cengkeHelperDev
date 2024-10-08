@@ -1,5 +1,7 @@
 package define
 
+import "errors"
+
 const (
 	InvalidJsonFormatCode    = 422
 	InvalidJsonFormatMessage = "无效的 JSON 格式"
@@ -9,3 +11,5 @@ const (
 
 	PendingOpenFuncCode = 20001
 )
+
+var RecoverableError = errors.New("recoverable error")

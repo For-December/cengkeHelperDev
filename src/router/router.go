@@ -40,6 +40,9 @@ func Routers() *gin.Engine {
 		// 删除评论
 		v1.DELETE("comments/:id", tree_hole.CommentsDeleteOneHandler)
 
+		// 个人点赞信息
+		v1.GET("profile/stars", tree_hole.StarsGetAllHandler)
+
 	}
 	return app
 }

@@ -1,9 +1,11 @@
 package tree_hole
 
 import (
+	"cengkeHelperDev/src/constant/define"
 	"cengkeHelperDev/src/models"
 	"cengkeHelperDev/src/service"
 	"cengkeHelperDev/src/utils/logger"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -38,7 +40,7 @@ func StarsUpdateOneHandler(c *gin.Context) {
 		uint32(userId),
 		uint32(id),
 		req.IsStar,
-	); err != nil {
+	); err != nil && !errors.Is(err, define.RecoverableError) {
 		logger.Warning(err)
 		c.JSON(http.StatusBadRequest, models.NewBadResp("点赞失败！"))
 		return
@@ -52,5 +54,14 @@ func StarsUpdateOneHandler(c *gin.Context) {
 }
 
 func StarsGetAllHandler(c *gin.Context) {
+	// 从token中获取用户id
+	userIdStr := "1"
+	userId, _ := strconv.Atoi(userIdStr)
+
+	c.JSON(http.StatusOK, models.RespData{
+		Code: 0,
+		Data: service.GetStarsList(uint32(userId)),
+		Msg:  "success",
+	})
 
 }
