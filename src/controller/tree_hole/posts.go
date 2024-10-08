@@ -98,6 +98,28 @@ func PostsGetOneHandler(c *gin.Context) {
 
 }
 
+func PostsDeleteOneHandler(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.NewBadResp("参数错误！"))
+		return
+	}
+
+	post := service.GetPostById(uint32(id))
+	if post == nil {
+		c.JSON(http.StatusBadRequest, models.NewBadResp("帖子不存在！"))
+		return
+	}
+
+	c.JSON(http.StatusOK, models.RespData{
+		Code: 200,
+		Data: post,
+		Msg:  "success",
+	})
+
+}
+
 func PostsGetCommentsHandler(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)

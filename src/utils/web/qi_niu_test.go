@@ -7,6 +7,14 @@ import (
 	"testing"
 )
 
+func TestDeleteFromQiNiu(t *testing.T) {
+	err := DeleteFromQiNiu("img_1728355351")
+	if err != nil {
+		logger.Error(err)
+		return
+	}
+}
+
 func TestUploadToQiNiu(t *testing.T) {
 	file, err := os.OpenFile("dist/vite.svg", os.O_RDONLY, 0666)
 	if err != nil {

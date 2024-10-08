@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/qiniu/go-sdk/v7/storagev2/credentials"
 	"github.com/qiniu/go-sdk/v7/storagev2/http_client"
+	"github.com/qiniu/go-sdk/v7/storagev2/objects"
 	"github.com/qiniu/go-sdk/v7/storagev2/uploader"
 	"io"
 	"mime/multipart"
@@ -88,4 +89,24 @@ func UploadToQiNiu(reader io.Reader) (string, error) {
 
 	return define.QiNiuDomain + "/" + key, err
 
+}
+
+func DeleteFromQiNiu(key string) error {
+	accessKey := config.EnvCfg.QiNiuAccessKey
+	secretKey := config.EnvCfg.QiNiuSecretKey
+	bucketName := define.QiNiuBucket
+
+	mac := credentials.NewCredentials(accessKey, secretKey)
+	objectsManager := objects.NewObjectsManager(&objects.ObjectsManagerOptions{
+		Options: http_client.Options{Credentials: mac},
+	})
+
+	bucket := objectsManager.Bucket(bucketName)
+
+	err := bucket.Object(key).Delete().Call(context.Background())
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
