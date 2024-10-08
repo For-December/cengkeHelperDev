@@ -1,6 +1,7 @@
 package tree_hole
 
 import (
+	"cengkeHelperDev/src/constant/define"
 	"cengkeHelperDev/src/dbmodels"
 	"cengkeHelperDev/src/models"
 	"cengkeHelperDev/src/service"
@@ -44,6 +45,8 @@ func PostsGetAllHandler(c *gin.Context) {
 }
 
 func PostsCreateOneHandler(c *gin.Context) {
+
+	// 这两个参数应当从token获得
 	authorIdStr, _ := c.GetPostForm("authorId")
 	authorName := c.PostForm("authorName")
 
@@ -56,6 +59,10 @@ func PostsCreateOneHandler(c *gin.Context) {
 	if authorId == 0 || authorName == "" || text == "" {
 		c.JSON(http.StatusBadRequest, models.NewBadResp("参数错误！"))
 		return
+	}
+
+	if authorId == define.DefaultUserId {
+		authorName = define.DefaultUsername
 	}
 
 	if len(images) > 5 {

@@ -55,3 +55,30 @@ func CommentsCreateOneHandler(c *gin.Context) {
 		Msg:  "success",
 	})
 }
+
+func CommentsDeleteOneHandler(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		logger.Warning(err)
+		c.JSON(http.StatusBadRequest, models.NewBadResp("参数错误！"))
+		return
+	}
+
+	// 从token中获取用户id
+	authorIdStr := "1"
+	authorId, _ := strconv.Atoi(authorIdStr)
+
+	err = service.DeleteCommentById(uint32(authorId), uint32(id))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.NewBadResp(err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, models.RespData{
+		Code: 200,
+		Data: nil,
+		Msg:  "success",
+	})
+
+}

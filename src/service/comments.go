@@ -4,6 +4,7 @@ import (
 	"cengkeHelperDev/src/dbmodels"
 	"cengkeHelperDev/src/models"
 	"cengkeHelperDev/src/storage/database"
+	"cengkeHelperDev/src/utils/logger"
 	"errors"
 	"gorm.io/gorm"
 )
@@ -65,4 +66,29 @@ func SaveComment(authorId, postId uint32, authorName, content string) error {
 
 	return nil
 
+}
+
+func DeleteCommentById(userId, id uint32) error {
+	comment := &dbmodels.CommentRecord{}
+	if err := database.Client.First(comment, id).Error; err != nil {
+		logger.Warning(err)
+		return err
+	}
+	if comment.ID == 0 {
+		logger.WarningF("comment %d not found", id)
+		return errors.New("评论不存在！")
+	}
+
+	if comment.AuthorId != userId {
+		return errors.New("无删除权限！")
+	}
+
+	if err := database.Client.Model(&dbmodels.CommentRecord{}).
+		Where("id = ?", id).
+		Delete(nil).Error; err != nil {
+		logger.Warning(err)
+		return err
+	}
+
+	return nil
 }
