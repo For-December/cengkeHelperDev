@@ -4,6 +4,7 @@ import (
 	"cengkeHelperDev/src/storage/database"
 	"cengkeHelperDev/src/utils/generator"
 	"cengkeHelperDev/src/utils/logger"
+	"slices"
 	"time"
 )
 
@@ -84,6 +85,14 @@ func getInfos() [][]BuildingTeachInfos {
 		}
 
 	}
+
+	// 每个学部的教学楼按照课程数量排序
+	for i := range RespTeachInfos {
+		slices.SortFunc(RespTeachInfos[i], func(a, b BuildingTeachInfos) int {
+			return len(b.Infos) - len(a.Infos)
+		})
+	}
+
 	//for _, info := range searchByArea(1) {
 	//	if !generator.IsWeekLessonMatch(2, 2, info.WeekAndTime) {
 	//		continue
