@@ -83,7 +83,7 @@ func UploadToQiNiu(reader io.Reader) (string, error) {
 		FileName:   key,
 	}, nil)
 	if err != nil {
-		logger.Error("上传失败，可能是没配置key和secret：", err)
+		logger.Error("上传失败，可能是key和secret配置有误：", err)
 		return "", err
 	}
 
